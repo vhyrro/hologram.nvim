@@ -40,10 +40,4 @@ function fs.get_chunked(buf)
     return chunks
 end
 
--- big endian
-function fs.bytes2int(bufp)
-    local bor, lsh = bit.bor, bit.lshift
-    return bor(lsh(bufp[0], 24), lsh(bufp[1], 16), lsh(bufp[2], 8), bufp[3])
-end
-
 return fs

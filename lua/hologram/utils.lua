@@ -49,4 +49,10 @@ function utils.tbl_compare(t1, t2)
     return true
 end
 
+-- big endian
+function utils.bytes2int(bufp)
+    local bor, lsh = bit.bor, bit.lshift
+    return bor(lsh(bufp[0], 24), lsh(bufp[1], 16), lsh(bufp[2], 8), bufp[3])
+end
+
 return utils
