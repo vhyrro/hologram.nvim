@@ -1,5 +1,5 @@
 format:
-	stylua -v --verify .
+	stylua -v .
 
 check:
 	luacheck lua/
