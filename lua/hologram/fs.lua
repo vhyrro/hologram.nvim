@@ -1,5 +1,5 @@
-local ffi = require('ffi')
 local base64 = require('hologram.base64')
+local ffi = require('ffi')
 local fs = {}
 
 function fs.get_dims_PNG(path)

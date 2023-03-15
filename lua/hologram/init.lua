@@ -1,7 +1,7 @@
 local hologram = {}
-local state = require('hologram.state')
 local Image = require('hologram.image')
 local fs = require('hologram.fs')
+local state = require('hologram.state')
 
 function hologram.setup(opts)
     -- Create autocommands

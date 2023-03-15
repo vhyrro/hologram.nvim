@@ -1,7 +1,7 @@
-local terminal = require('hologram.terminal')
 local fs = require('hologram.fs')
-local utils = require('hologram.utils')
 local state = require('hologram.state')
+local terminal = require('hologram.terminal')
+local utils = require('hologram.utils')
 
 local Image = {
     instances = {},
