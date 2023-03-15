@@ -30,6 +30,8 @@ function Image:new(source, keys)
     end
 
     assert(type(source) == 'string', 'Image source is not a valid string')
+    source = vim.fn.expand(source)
+
     if keys.data_width == nil and keys.data_height == nil then
         if source:sub(-4) == '.png' then
             keys.data_width, keys.data_height = fs.get_dims_PNG(source)
