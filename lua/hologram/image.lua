@@ -184,7 +184,7 @@ function Image:set_vpad(buf, row, cols, rows)
         filler[#filler + 1] = { { text, '' } }
     end
 
-    vim.api.nvim_buf_set_extmark(buf, vim.g.hologram_extmark_ns, row - 1, 0, {
+    vim.api.nvim_buf_set_extmark(buf, state.namespace, row - 1, 0, {
         id = self.transmit_keys.image_id,
         virt_lines = filler,
         --virt_lines_leftcol = true,
@@ -195,7 +195,7 @@ end
 
 function Image:remove_vpad(buf)
     if self.vpad ~= nil then
-        vim.api.nvim_buf_del_extmark(buf, vim.g.hologram_extmark_ns, self.transmit_keys.image_id)
+        vim.api.nvim_buf_del_extmark(buf, state.namespace, self.transmit_keys.image_id)
         self.vpad = nil
     end
 end

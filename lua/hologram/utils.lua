@@ -1,3 +1,4 @@
+local state = require('hologram.state')
 local utils = {}
 
 function utils.buf_screenpos(row, col, win, buf)
@@ -23,7 +24,7 @@ function utils.filler_above(row, win, buf)
         local filler = vim.fn.winsaveview().topfill
         local exts = vim.api.nvim_buf_get_extmarks(
             buf,
-            vim.g.hologram_extmark_ns,
+            state.namespace,
             { top - 1, 0 },
             { row - 1, -1 },
             { details = true }

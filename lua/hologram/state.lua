@@ -1,17 +1,20 @@
-local state = {}
+local state = {
+    cell_size = {
+        x = 0,
+        y = 0,
+    },
 
-state.cell_size = {
-    x = 0,
-    y = 0,
+    screen_size = {
+        x = 0,
+        y = 0,
+        cols = 0,
+        rows = 0,
+    },
+
+    namespace = vim.api.nvim_create_namespace('hologram'),
 }
 
-state.screen_size = {
-    x = 0,
-    y = 0,
-    cols = 0,
-    rows = 0,
-}
-
+--- TODO: Docs
 function state.update_cell_size()
     local ffi = require('ffi')
     ffi.cdef([[
