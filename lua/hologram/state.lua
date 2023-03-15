@@ -14,7 +14,7 @@ state.screen_size = {
 
 function state.update_cell_size()
     local ffi = require('ffi')
-    ffi.cdef[[
+    ffi.cdef([[
         typedef struct {
             unsigned short row;
             unsigned short col;
@@ -23,7 +23,7 @@ function state.update_cell_size()
         } winsize;
 
         int ioctl(int, int, ...);
-    ]]
+    ]])
 
     local TIOCGWINSZ = nil
     if vim.fn.has('linux') == 1 then
@@ -34,9 +34,8 @@ function state.update_cell_size()
         TIOCGWINSZ = 0x40087468
     end
 
-    local sz = ffi.new("winsize")
-    assert(ffi.C.ioctl(1, TIOCGWINSZ, sz) == 0,
-        'Hologram failed to get screen size: detected OS is not supported.')
+    local sz = ffi.new('winsize')
+    assert(ffi.C.ioctl(1, TIOCGWINSZ, sz) == 0, 'Hologram failed to get screen size: detected OS is not supported.')
 
     state.screen_size.x = sz.xpixel
     state.screen_size.y = sz.ypixel
