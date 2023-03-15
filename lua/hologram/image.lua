@@ -32,11 +32,21 @@ function Image:new(source, keys)
     assert(type(source) == 'string', 'Image source is not a valid string')
     source = vim.fn.expand(source)
 
+    -- TODO: Change this to an or statement
     if keys.data_width == nil and keys.data_height == nil then
-        if source:sub(-4) == '.png' then
-            keys.data_width, keys.data_height = fs.get_dims_PNG(source)
-        end
+        -- Open the file to extract its metadata
+        local file = fs.open_file(source)
+        -- Parse the file to figure out its true file extension
+        local parser = assert(require('hologram.parsers').detect(file))
+
+        local width, height = parser.get_dimensions(file)
+
+        keys.data_width = keys.data_width or width
+        keys.data_height = keys.data_height or height
+
+        assert(vim.loop.fs_close(file))
     end
+
     local cols = math.ceil(keys.data_width / state.cell_size.x)
     local rows = math.ceil(keys.data_height / state.cell_size.y)
 
