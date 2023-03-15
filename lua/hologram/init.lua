@@ -5,7 +5,7 @@ local state = require('hologram.state')
 
 function hologram.setup(opts)
     -- Create autocommands
-    local augroup = vim.api.nvim_create_augroup('Hologram', { clear = false })
+    local group = vim.api.nvim_create_augroup('Hologram', { clear = true })
 
     vim.g.hologram_extmark_ns = vim.api.nvim_create_namespace('hologram_extmark')
 
@@ -13,7 +13,7 @@ function hologram.setup(opts)
 
     if opts.auto_display == true then
         vim.api.nvim_set_decoration_provider(vim.g.hologram_extmark_ns, {
-            on_win = function(_, win, buf, top, bot)
+            on_win = function(_, _, buf, top, bot)
                 vim.schedule(function()
                     hologram.buf_render_images(buf, top, bot)
                 end)
@@ -21,15 +21,17 @@ function hologram.setup(opts)
         })
 
         vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
+            group = group,
             callback = function(au)
                 hologram.buf_delete_images(au.buf, 0, -1)
             end,
         })
 
         vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
+            group = group,
             callback = function(au)
                 vim.api.nvim_buf_attach(au.buf, false, {
-                    on_lines = function(_, buf, tick, first, last)
+                    on_lines = function(_, buf, _, first, last)
                         hologram.buf_delete_images(buf, first, last)
                         hologram.buf_generate_images(buf, first, last)
                     end,
@@ -56,7 +58,7 @@ function hologram.buf_render_images(buf, top, bot)
 
     local curr_ids = {}
     for _, ext in ipairs(exts) do
-        local id, row, col = unpack(ext)
+        local id, row, _ = unpack(ext)
         Image.instances[id]:display(row + 1, 0, buf, {})
         curr_ids[#curr_ids + 1] = id
     end

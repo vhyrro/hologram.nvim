@@ -180,7 +180,7 @@ function Image:set_vpad(buf, row, cols, rows)
 
     local text = string.rep(' ', cols)
     local filler = {}
-    for i = 0, rows - 1 do
+    for _ = 0, rows - 1 do
         filler[#filler + 1] = { { text, '' } }
     end
 

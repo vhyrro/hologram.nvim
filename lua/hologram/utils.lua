@@ -1,4 +1,3 @@
-local terminal = require('hologram.terminal')
 local utils = {}
 
 function utils.buf_screenpos(row, col, win, buf)
