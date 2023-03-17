@@ -9,7 +9,7 @@ local Image = {
 }
 Image.__index = Image
 
-function Image:new(source, keys)
+function Image:new(filename, keys)
     keys = keys or {}
     keys = vim.tbl_extend('keep', keys, {
         format = 100,
@@ -29,22 +29,19 @@ function Image:new(source, keys)
         Image.next_id = Image.next_id + 1
     end
 
-    assert(type(source) == 'string', 'Image source is not a valid string')
-    source = vim.fn.expand(source)
+    assert(type(filename) == 'string', 'Image source is not a valid string')
+    filename = vim.fn.expand(filename)
+
+    -- Parse the file to figure out its true file extension
+    local parser = assert(require('hologram.parsers').detect(filename))
+    local data = parser.open(filename)
 
     -- TODO: Change this to an or statement
     if keys.data_width == nil and keys.data_height == nil then
-        -- Open the file to extract its metadata
-        local file = fs.open_file(source)
-        -- Parse the file to figure out its true file extension
-        local parser = assert(require('hologram.parsers').detect(file))
-
-        local width, height = parser.get_dimensions(file)
+        local width, height = parser.get_dimensions(data, filename)
 
         keys.data_width = keys.data_width or width
         keys.data_height = keys.data_height or height
-
-        assert(vim.loop.fs_close(file))
     end
 
     local cols = math.ceil(keys.data_width / state.cell_size.x)
@@ -53,10 +50,16 @@ function Image:new(source, keys)
     keys.action = 't'
     keys.quiet = 2
 
-    terminal.send_graphics_command(keys, source)
+    local transmit_data = assert(parser.get_transmit_data(data, filename))
+
+    keys = vim.tbl_deep_extend("force", keys, transmit_data.keys or {})
+
+    terminal.send_graphics_command(keys, transmit_data.payload)
+
+    parser.close(data, filename)
 
     Image.instances[keys.image_id] = setmetatable({
-        source = source,
+        source = transmit_data,
         transmit_keys = keys,
         cols = cols,
         rows = rows,
