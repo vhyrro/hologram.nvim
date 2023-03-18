@@ -48,6 +48,7 @@ function Image:new(filename, keys)
     local rows = math.ceil(keys.data_height / state.cell_size.y)
 
     image:resize(keys.data_width, keys.data_height)
+
     local payload = image:get_blob()
 
     terminal.send_graphics_command(keys, payload)
