@@ -35,7 +35,7 @@ require('hologram').setup{
 There are plans for parts of Hologram to be able to be used in other plugins, such as its image functionality.
 
 ## `image.lua`
-Minimal example - save as a file (e.g. minimal.lua) then run with `:luafile %`:
+Minimal example - save as a file (e.g. minimal.lua) then run with `:so %`:
 
 ```lua
 local source = '~/Documents/my-image.png'
@@ -119,3 +119,6 @@ Extensions:
 
 Misc:
 - [x] Switch to bare C implementation for base64 image encoding.
+
+# Known Limitations
+- [ ] Virtual lines other than the ones produced by hologram are not accounted for when placing an image.
