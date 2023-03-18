@@ -105,8 +105,8 @@ function terminal.restore_cursor()
 end
 
 -- glob together writes to stdout
-terminal.write = vim.schedule_wrap(function(data)
+terminal.write = function(data)
     stdout:write(data)
-end)
+end
 
 return terminal
