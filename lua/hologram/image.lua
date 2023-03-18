@@ -13,7 +13,7 @@ function Image:new(filename, keys)
     keys = keys or {}
     keys = vim.tbl_extend('keep', keys, {
         format = 100,
-        transmission_type = 'd',
+        transmission_type = 'f',
         data_width = nil,
         data_height = nil,
         data_size = nil,
@@ -36,24 +36,28 @@ function Image:new(filename, keys)
     keys.quiet = 2
 
     local image = assert(magick.load_image(filename))
-
-    if image:get_format():lower() ~= 'png' then
-        image:set_format('png')
-    end
+    local payload = filename
 
     keys.data_width = keys.data_width or image:get_width()
     keys.data_height = keys.data_height or image:get_height()
 
-    local cols = math.ceil(keys.data_width / state.cell_size.x)
-    local rows = math.ceil(keys.data_height / state.cell_size.y)
-
     image:resize(keys.data_width, keys.data_height)
 
-    local payload = image:get_blob()
+    if image:get_format():lower() ~= 'png' then
+        image:set_format('png')
+        keys.transmission_type = 't'
+
+        local tempname = vim.fn.tempname() .. '.tty-graphics-protocol'
+        image:write(tempname)
+        payload = tempname
+    end
+
+    image:destroy()
 
     terminal.send_graphics_command(keys, payload)
 
-    image:destroy()
+    local cols = math.ceil(keys.data_width / state.cell_size.x)
+    local rows = math.ceil(keys.data_height / state.cell_size.y)
 
     Image.instances[keys.image_id] = setmetatable({
         source = payload,
