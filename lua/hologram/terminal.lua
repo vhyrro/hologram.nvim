@@ -65,9 +65,10 @@ function terminal.send_graphics_command(keys, payload)
     ctrl = ctrl:sub(0, -2) -- chop trailing comma
 
     if payload then
-        if keys.transmission_type ~= 'd' then
+        if keys.transmission_type then
             payload = base64.encode(payload)
         end
+
         payload = terminal.get_chunked(payload)
         for i = 1, #payload do
             terminal.write('\x1b_G' .. ctrl .. ';' .. payload[i] .. '\x1b\\')

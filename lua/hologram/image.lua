@@ -1,4 +1,4 @@
-local fs = require('hologram.fs')
+local magick = require('magick')
 local state = require('hologram.state')
 local terminal = require('hologram.terminal')
 local utils = require('hologram.utils')
@@ -13,7 +13,7 @@ function Image:new(filename, keys)
     keys = keys or {}
     keys = vim.tbl_extend('keep', keys, {
         format = 100,
-        transmission_type = 'f',
+        transmission_type = 'd',
         data_width = nil,
         data_height = nil,
         data_size = nil,
@@ -32,34 +32,30 @@ function Image:new(filename, keys)
     assert(type(filename) == 'string', 'Image source is not a valid string')
     filename = vim.fn.expand(filename)
 
-    -- Parse the file to figure out its true file extension
-    local parser = assert(require('hologram.parsers').detect(filename))
-    local data = parser.open(filename)
+    keys.action = 't'
+    keys.quiet = 2
 
-    -- TODO: Change this to an or statement
-    if keys.data_width == nil and keys.data_height == nil then
-        local width, height = parser.get_dimensions(data, filename)
+    local image = assert(magick.load_image(filename))
 
-        keys.data_width = keys.data_width or width
-        keys.data_height = keys.data_height or height
+    if image:get_format():lower() ~= 'png' then
+        image:set_format('png')
     end
+
+    keys.data_width = keys.data_width or image:get_width()
+    keys.data_height = keys.data_height or image:get_height()
 
     local cols = math.ceil(keys.data_width / state.cell_size.x)
     local rows = math.ceil(keys.data_height / state.cell_size.y)
 
-    keys.action = 't'
-    keys.quiet = 2
+    image:resize(keys.data_width, keys.data_height)
+    local payload = image:get_blob()
 
-    local transmit_data = assert(parser.get_transmit_data(data, filename))
+    terminal.send_graphics_command(keys, payload)
 
-    keys = vim.tbl_deep_extend("force", keys, transmit_data.keys or {})
-
-    terminal.send_graphics_command(keys, transmit_data.payload)
-
-    parser.close(data, filename)
+    image:destroy()
 
     Image.instances[keys.image_id] = setmetatable({
-        source = transmit_data,
+        source = payload,
         transmit_keys = keys,
         cols = cols,
         rows = rows,
