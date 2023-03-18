@@ -38,7 +38,7 @@ There are plans for parts of Hologram to be able to be used in other plugins, su
 Minimal example - save as a file (e.g. minimal.lua) then run with `:luafile %`:
 
 ```lua
-local source = '/Users/.../Documents/my-image.png'
+local source = '~/Documents/my-image.png'
 local buf = vim.api.nvim_get_current_buf()
 local image = require('hologram.image'):new(source, {})
 
@@ -104,8 +104,8 @@ Core functionality:
     - [x] Ability to transfer .png format files and display at an arbitrary location in an nvim buffer.
     - [x] Retain image transparency when being displayed.
     - [x] Retain image position when scrolling.
-    - [ ] Extend to work with file formats other than png, like jpg.
-    - [ ] Add more transmission mediums apart from direct (data is transmitted within escape code itself), e.g files and temporary files - add download and display image from url?
+    - [x] Extend to work with file formats other than png, like jpg, webp and others.
+    - [ ] Add download from URL and send to terminal functionality.
     - [x] Auto crop image when partly out of bounds.
     - [ ] Ability to transfer animation frame data.
 - [ ] Support for [Iterm2 Images Protocol](https://iterm2.com/documentation-images.html#:~:text=Inline%20Images%20Protocol-,Inline%20Images%20Protocol,8%2Dbit%2Dclean%20environment).
