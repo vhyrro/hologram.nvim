@@ -8,11 +8,6 @@ function hologram.setup(opts)
         auto_display = true,
     })
 
-    _ = opts
-
-    -- Create autocommands
-    -- local group = vim.api.nvim_create_augroup('Hologram', { clear = true })
-
     state.update_cell_size()
 
     -- Routine to update the positions of all images
@@ -29,6 +24,50 @@ function hologram.setup(opts)
             for _, ext in ipairs(exts) do
                 local id, row = unpack(ext)
                 Image.instances[id]:display(row + 1, 0, buf, {})
+            end
+        end,
+    })
+
+    local group = vim.api.nvim_create_augroup('Hologram', { clear = true })
+
+    vim.api.nvim_create_autocmd("BufLeave", {
+        group = group,
+        callback = function(event)
+            local win = vim.fn.bufwinid(event.buf)
+            local info = vim.fn.getwininfo(win)[1]
+
+            local exts = vim.api.nvim_buf_get_extmarks(
+                event.buf,
+                state.namespace,
+                { math.max(info.topline - 1, 0), 0 },
+                { info.botline - 2, -1 },
+                {}
+            )
+
+            for _, ext in ipairs(exts) do
+                local id = ext[1]
+                Image.instances[id]:delete(event.buf, {})
+            end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd("BufEnter", {
+        group = group,
+        callback = function(event)
+            local win = vim.fn.bufwinid(event.buf)
+            local info = vim.fn.getwininfo(win)[1]
+
+            local exts = vim.api.nvim_buf_get_extmarks(
+                event.buf,
+                state.namespace,
+                { math.max(info.topline - 1, 0), 0 },
+                { info.botline - 2, -1 },
+                {}
+            )
+
+            for _, ext in ipairs(exts) do
+                local id, row, col = unpack(ext)
+                Image.instances[id]:display(row + 1, col, event.buf, {})
             end
         end,
     })
