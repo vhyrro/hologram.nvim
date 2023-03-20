@@ -30,7 +30,7 @@ function hologram.setup(opts)
 
     local group = vim.api.nvim_create_augroup('Hologram', { clear = true })
 
-    vim.api.nvim_create_autocmd("BufLeave", {
+    vim.api.nvim_create_autocmd("BufWinLeave", {
         group = group,
         callback = function(event)
             local win = vim.fn.bufwinid(event.buf)
@@ -51,7 +51,7 @@ function hologram.setup(opts)
         end,
     })
 
-    vim.api.nvim_create_autocmd("BufEnter", {
+    vim.api.nvim_create_autocmd("BufWinEnter", {
         group = group,
         callback = function(event)
             local win = vim.fn.bufwinid(event.buf)
