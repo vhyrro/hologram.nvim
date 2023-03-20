@@ -36,6 +36,10 @@ function hologram.setup(opts)
             local win = vim.fn.bufwinid(event.buf)
             local info = vim.fn.getwininfo(win)[1]
 
+            if not info then
+                return
+            end
+
             local exts = vim.api.nvim_buf_get_extmarks(
                 event.buf,
                 state.namespace,
@@ -56,6 +60,10 @@ function hologram.setup(opts)
         callback = function(event)
             local win = vim.fn.bufwinid(event.buf)
             local info = vim.fn.getwininfo(win)[1]
+
+            if not info then
+                return
+            end
 
             local exts = vim.api.nvim_buf_get_extmarks(
                 event.buf,
