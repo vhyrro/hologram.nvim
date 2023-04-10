@@ -95,7 +95,7 @@ function hologram.setup(opts)
                 return
             end
 
-            local query = vim.treesitter.get_query(vim.api.nvim_buf_get_option(buffer, "filetype") or "", "images")
+            local query = vim.treesitter.query.get(vim.api.nvim_buf_get_option(buffer, "filetype") or "", "images")
 
             if not query then
                 return
