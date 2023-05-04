@@ -13,17 +13,48 @@
 </p>
 
 # Install
+
+To work properly, `hologram.nvim` requires that the `magick` luarock is installed and
+readily available on your system.
+
 Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 ```lua
-use {'edluffy/hologram.nvim'}
+use {
+    'edluffy/hologram.nvim',
+    config = function()
+        require("hologram").setup()
+    end,
+
+    rocks = { "magick" },
+}
 ```
 Using [vim-plug](https://github.com/junegunn/vim-plug):
 ```vimscript
 Plug 'edluffy/hologram.nvim'
 ```
 
+## Manual LuaRocks Installation
+
+In case you are using a plugin manager that does not have luarocks integration,
+you can opt to install `magick` manually by running the following command on your
+system:
+
+```sh
+luarocks --local --lua-version=5.1 install magick
+```
+
+Afterwards, somewhere in the beginning of your Neovim configuration,
+allow Lua to require installed `luarocks` packages. Usually you'll
+find these plugins installed under `~/.luarocks/share/lua/<lua-version>/<package-name>`:
+
+```lua
+package.path = package.path .. ";~/.luarocks.share/lua/5.1/?/init.lua;"
+```
+
 # Usage
-Hologram.nvim allows you to view inline images directly inside a Neovim buffer. Requires the following setup in `init.lua`:
+
+Hologram.nvim allows you to view inline images directly inside a Neovim buffer.
+Requires the following setup in `init.lua`:
 
 ```lua
 require('hologram').setup{
